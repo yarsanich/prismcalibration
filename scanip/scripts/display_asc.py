@@ -21,28 +21,15 @@ def read_data_from_file(filepath):
     return points
 
 
-def plot_data_with_matplotlib(points):
+def plot_data_with_matplotlib(points: np.array):
     """Plot 3D points with matplotlib Axes3D"""
-    fig = plt.figure(figsize=(7,5))
-    ax = Axes3D(fig)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
 
-    x= np.array(list(map(lambda x: x[0], points)))
-    y= np.array(list(map(lambda x: x[1], points)))
-    z= np.array(list(map(lambda x: x[2], points)))
-    
-    ax.plot(x, y, z, 'ok')
+    ax.plot(points[0], points[1], points[2], c='r', marker='o')
+
+    ax.set_xlabel('X')
+    ax.set_ylabel('Y')
+    ax.set_zlabel('Z')
 
     plt.show()
-
-
-def main(filepath):
-    """Get data from file, then plot with matplotlib"""
-    points = read_data_from_file(filepath)
-    plot_data_with_matplotlib(points)
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("filepath", help="path to file with asc data")
-    args = parser.parse_args()
-    main(args.filepath)

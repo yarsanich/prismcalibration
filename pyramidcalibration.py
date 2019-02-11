@@ -1,17 +1,13 @@
+from typing import List, NamedTuple, Union
+
 import numpy as np
 
-from PIL import Image
-from typing import NamedTuple, Union, List
+from imageprocessing import process_image
 from scanip.image_proc import load_image
 from scanip.visualize import display_points
-
 from utils import (
-    save_relations_to_json,
-    save_relations_to_yaml,
-    load_relations_from_yaml,
-    save_pointscloud
+    save_relations_to_yaml
 )
-from imageprocessing import process_image
 
 np.set_printoptions(threshold=np.inf)
 
