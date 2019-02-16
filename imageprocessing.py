@@ -1,7 +1,7 @@
 from math import sqrt
 
 import numpy as np
-from scipy.misc import imsave
+from scipy.misc import imshow
 from skimage.feature import canny
 from skimage.filters import threshold_otsu
 from skimage.transform import probabilistic_hough_line
@@ -17,7 +17,7 @@ def thresh_image(image):
     return image
 
 
-def process_image(image):
+def process_image(image, show_result=False, with_skeletonize=True):
     """
     1. Create binary image(convert to black & white)
     2. Remove small objects
@@ -26,8 +26,7 @@ def process_image(image):
 
     bw_image = image >= 100
 
-    
-    bw_wo_small_image = remove_small_obj(bw_image, 700)
+    bw_wo_small_image = remove_small_obj(bw_image, 500)
 
     image_threshold = np.array(bw_wo_small_image)
     h, w = image_threshold.shape
@@ -40,25 +39,12 @@ def process_image(image):
     image_line = np.zeros_like(image_threshold)
     image_line[v, u.astype(int)] = 255.0
 
-    return image_line
+    if show_result:
+        import matplotlib.pyplot as pyplot
+        pyplot.imshow(image_line)
+        pyplot.show(image_line.any())
 
-
-def process_image_2(image):
-    """
-    1. Create binary image(convert to black & white)
-    2. Remove small objects
-    3. Edge detection with Canny algorithm
-    """
-
-    bw_image = image >= 75
-    imsave('processing_test_step_01.png', bw_image)
-    
-    bw_wo_small_image = remove_small_obj(bw_image, 100)
-    imsave('processing_test_step_02.png', bw_wo_small_image)
-
-    edge_detected_image = canny(image, sigma=3, low_threshold=0, high_threshold=1, use_quantiles=True)
-    imsave('processing_test_step_03.png', edge_detected_image)
-    return edge_detected_image
+    return image_line if with_skeletonize else image_threshold
 
 
 def find_border_lines(image):
@@ -92,7 +78,6 @@ def length_of_line(line):
 
 if __name__ == "__main__":
     image = load_image("capture_for_processing_test.jpg")
-    image = process_image_2(image)
     line_sections = find_border_lines(image)
-    
+
     combine_line_sections(line_sections)
